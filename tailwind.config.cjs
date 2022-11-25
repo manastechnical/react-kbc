@@ -31,6 +31,9 @@ module.exports = {
       animation:{
         'correctAns':'correct 3s ease forwards',
         'wrongAns':'wrong 3s ease forwards'
+      },
+      screens:{
+        'breakPoint':'702px'
       }
     },
   },

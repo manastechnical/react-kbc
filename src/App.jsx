@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import QnA from './components/QnA';
 import Timer from './components/Timer';
+import { Menu, Cancel } from '@material-ui/icons';
 
 function App() {
 
   const [questionNo, setQuestionNo] = useState(1);
   const [stop, setStop] = useState(false);
   const [earned, setEarned] = useState("₹ 0");
-  
+  const [clicked, setClicked] = useState(false);
+
 
   const moneyPyramid = [
     { id: 1, amount: "₹ 1000" },
@@ -385,22 +387,44 @@ function App() {
 
   useEffect(() => {
     questionNo > 1 &&
-    setEarned(moneyPyramid.find(m => m.id === questionNo - 1).amount);
+      setEarned(moneyPyramid.find(m => m.id === questionNo - 1).amount);
   }, [moneyPyramid, questionNo]);
 
   return (
-    <div className="h-screen bg-db flex text-white">
+    <div className="h-screen w-screen bg-db flex text-white">
       {stop || questionNo > 16 ? (<h1 className='relative top-0 bottom-0 right-0 left-0 m-auto text-3xl'>You Earned: {earned}</h1>) : (
         <>
-          <div className="w-3/4 bg-bgImg bg-cover flex-cols">
+          <div className="md:w-3/4 w-screen bg-bgImg bg-cover flex-cols">
             <div className='h-1/2 relative'>
-              <div className='flex justify-center items-center w-20 h-20 rounded-half border-solid border-white border-4 text-3xl font-bold absolute bottom-3 left-20'><Timer setStop={setStop} questionNo={questionNo}/></div>
+              <div className='flex justify-center items-center w-20 h-20 rounded-half border-solid border-white border-4 text-3xl font-bold absolute bottom-3 left-20'><Timer setStop={setStop} questionNo={questionNo} /></div>
             </div>
             <div className='h-1/2'>
               <QnA data={data} setStop={setStop} questionNo={questionNo} setQuestionNo={setQuestionNo} />
             </div>
           </div>
-          <div className="w-1/4 flex justify-center items-center">
+
+          {clicked ? (<div className='fixed top-0 right-0 w-64 h-full bg-db md:hidden'>
+            <div className='absolute top-7 right-4 w-7 h-7 cursor-pointer'>
+              <Cancel onClick={() => setClicked(!clicked)} className='absolute w-full h-1 -translate-y-1/2' />
+            </div>
+            <div className='block px-3 py-4'>
+              <ul className="list-none w-full p-5">
+                {moneyPyramid.map(m => (
+                  <li className={questionNo === m.id ? "flex items-center p-1 rounded-md bg-teal-600" : "flex items-center p-1 rounded-md"}>
+                    <span className="text-lg font-thin w-3/12">{m.id}</span>
+                    <span className="text-xl font-light">{m.amount}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>) :
+            (<div className='absolute top-7 right-1 w-7 h-7 cursor-pointer md:hidden'>
+              <Menu onClick={() => setClicked(!clicked)} className='absolute w-full h-10 -translate-y-1/2' />
+            </div>)}
+
+
+
+          <div className="hidden md:w-1/4 md:flex md:justify-center md:items-center">
             <ul className="list-none w-full p-5">
               {moneyPyramid.map(m => (
                 <li className={questionNo === m.id ? "flex items-center p-1 rounded-md bg-teal-600" : "flex items-center p-1 rounded-md"}>
